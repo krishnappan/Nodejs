@@ -1,3 +1,5 @@
+def gv
+
 pipeline {
     agent any
     tools {nodejs "Node17"}
@@ -12,8 +14,20 @@ pipeline {
 	booleanParam(name: 'executeTest', defaultValue:true, description: 'Execute Text')
     }   
     stages {
+	stage('init') {
+	    steps {	
+		script {
+			gv=load"script.groovy"
+		}	
+	    }
+	}
+
         stage('Source') {
             steps {
+		script {
+			gv.buildApp()
+		}
+
                 git 'https://github.com/krishnappan/Nodejs.git'
                 sh 'cat index.html'
             }
@@ -30,15 +44,27 @@ pipeline {
 
             steps {
                 echo NODE_ENV
-				
+		script {
+			gv.testApp()
+		}		
+
                 withCredentials([string(credentialsId: '6b775556-f59a-45b3-9f9a-4dd77fb3acc1', variable: 'secver')]) {
                     // some block
                     echo secver
                 }
                 sh 'npm install'
             }
-        }    
-        stage('artifact') {
+        }
+
+	stage ('deploy') {
+	    steps {
+		script {
+			gv.deployApp()
+	               }	
+		}    
+        }
+	
+	stage('artifact') {
             steps {
                 archiveArtifacts artifacts: '**', followSymlinks: false
             }            

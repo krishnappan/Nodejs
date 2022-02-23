@@ -9,7 +9,7 @@ pipeline {
     parameters{
   	string(name: 'VERSION', defaultValue: '', description: 'Provide the version')
 	choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: 'Select the version')
-	boolean(name: 'executeTest', defaultValue:true, description: 'Execute Text')
+	booleanParam(name: 'executeTest', defaultValue:true, description: 'Execute Text')
     }   
     stages {
         stage('Source') {

@@ -22,13 +22,15 @@ pipeline {
             environment{
                 NODE_ENV = 'Staging'
             }
+                when {
+                        expression {
+                                param.executeTest
+                        }
+                 }
+
             steps {
                 echo NODE_ENV
-		when {
-			expression {
-				param.executeTest
-			}	
-       		 }		
+				
                 withCredentials([string(credentialsId: '6b775556-f59a-45b3-9f9a-4dd77fb3acc1', variable: 'secver')]) {
                     // some block
                     echo secver
@@ -43,4 +45,3 @@ pipeline {
         }        
     }
 }
-

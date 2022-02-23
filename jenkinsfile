@@ -1,4 +1,4 @@
-pipeline {
+ipipeline {
     agent any
     tools {nodejs "Node17"}
     
@@ -6,6 +6,11 @@ pipeline {
         NODE_ENV='Production'
     }
     
+    parameters{
+  	string{name: 'VERSION', defaultValue: '', description: 'Provide the version'}
+	choice{name: 'VERSION', choices: [1.1.0, 1.2.0, 1.3.0], description: 'Select the version'}
+	boolean{name: 'executeTest', defaultValue:true, description: 'Execute Text'}
+    }   
     stages {
         stage('Source') {
             steps {
@@ -19,6 +24,11 @@ pipeline {
             }
             steps {
                 echo NODE_ENV
+		when {
+			expression {
+				param.executeTest
+			}	
+       		 }		
                 withCredentials([string(credentialsId: '6b775556-f59a-45b3-9f9a-4dd77fb3acc1', variable: 'secver')]) {
                     // some block
                     echo secver

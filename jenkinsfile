@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+    tools {nodejs "Node17"}
+    
+    environment{
+        NODE_ENV='Production'
+    }
+    
+    stages {
+        stage('Source') {
+            steps {
+                git 'https://github.com/krishnappan/Nodejs.git'
+                sh 'cat index.html'
+            }
+        }
+        stage('build') {
+            environment{
+                NODE_ENV = 'Staging'
+            }
+            steps {
+                echo NODE_ENV
+                withCredentials([string(credentialsId: '6b775556-f59a-45b3-9f9a-4dd77fb3acc1', variable: 'secver')]) {
+                    // some block
+                    echo secver
+                }
+                sh 'npm install'
+            }
+        }    
+        stage('artifact') {
+            steps {
+                archiveArtifacts artifacts: '**', followSymlinks: false
+            }            
+        }        
+    }
+}
+

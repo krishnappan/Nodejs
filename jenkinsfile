@@ -1,7 +1,7 @@
 def gv
 
 pipeline {
-    agent any
+    agent {node {label 'ec2Agent1'}}
     tools {nodejs "Node17"}
     
     environment{
